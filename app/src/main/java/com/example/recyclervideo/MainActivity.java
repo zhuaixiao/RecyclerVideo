@@ -6,8 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,14 +49,14 @@ public class MainActivity extends AppCompatActivity implements VideoPlayerComple
                         if (viewHolder != null && viewHolder instanceof VideoAdapter.ViewHolder) {
                             ((VideoAdapter.ViewHolder) viewHolder).videoView.startVideo();
                             //TODO 实现自动播放 播放完成后自动跳转
-//                            recyclerView.smoothScrollToPosition(viewHolder.getAdapterPosition() + 1);
-//                            if (((VideoAdapter.ViewHolder) viewHolder).videoView.isCompletion) {
-//                                Toast.makeText(MainActivity.this, "是", Toast.LENGTH_SHORT).show();
-//                                recyclerView.smoothScrollToPosition(viewHolder.getAdapterPosition() + 1);
-//                                ((VideoAdapter.ViewHolder) viewHolder).videoView.isCompletion = false;
-//                            }else {
-//                                Toast.makeText(MainActivity.this, "不是", Toast.LENGTH_SHORT).show();
-//                            }
+                        }
+                        LinearLayoutManager manager2 = (LinearLayoutManager) recyclerView.getLayoutManager();
+                        int i = manager2.findFirstVisibleItemPosition();
+                        if (manager2.getItemCount() == manager2.findLastCompletelyVisibleItemPosition() + 1) {
+                            Toast.makeText(MainActivity.this, "没有更多视频，即将停止播放！", Toast.LENGTH_SHORT).show();
+                        }
+                        if (manager2.getItemCount() == manager2.findLastCompletelyVisibleItemPosition() ) {
+                            Jzvd.releaseAllVideos();
                         }
                         break;
                     case RecyclerView.SCROLL_STATE_DRAGGING:
@@ -103,27 +103,20 @@ public class MainActivity extends AppCompatActivity implements VideoPlayerComple
         urlList.add("http://image.38.hn/public/attachment/201803/100651/201803141625005241.mp4");
         urlList.add("http://image.38.hn/public/attachment/201803/100651/201803141624378522.mp4");
         urlList.add("http://image.38.hn/public/attachment/201803/100651/201803131546119319.mp4");
-        urlList.add("http://image.38.hn/public/attachment/201803/100651/201803151735198462.mp4");
-        urlList.add("http://image.38.hn/public/attachment/201803/100651/201803150923220770.mp4");
-        urlList.add("http://image.38.hn/public/attachment/201803/100651/201803150922255785.mp4");
-        urlList.add("http://image.38.hn/public/attachment/201803/100651/201803150920130302.mp4");
-        urlList.add("http://image.38.hn/public/attachment/201803/100651/201803141625005241.mp4");
-        urlList.add("http://image.38.hn/public/attachment/201803/100651/201803141624378522.mp4");
-        urlList.add("http://image.38.hn/public/attachment/201803/100651/201803131546119319.mp4");
-        urlList.add("http://image.38.hn/public/attachment/201803/100651/201803151735198462.mp4");
-        urlList.add("http://image.38.hn/public/attachment/201803/100651/201803150923220770.mp4");
-        urlList.add("http://image.38.hn/public/attachment/201803/100651/201803150922255785.mp4");
-        urlList.add("http://image.38.hn/public/attachment/201803/100651/201803150920130302.mp4");
-        urlList.add("http://image.38.hn/public/attachment/201803/100651/201803141625005241.mp4");
-        urlList.add("http://image.38.hn/public/attachment/201803/100651/201803141624378522.mp4");
-        urlList.add("http://image.38.hn/public/attachment/201803/100651/201803131546119319.mp4");
         return urlList;
     }
 
     @Override
     public void onComplete() {
-        LinearLayoutManager manager1= (LinearLayoutManager) recyclerView.getLayoutManager();
-        int i=manager1.findFirstVisibleItemPosition();
-        recyclerView.smoothScrollToPosition(i+1);
+        LinearLayoutManager manager1 = (LinearLayoutManager) recyclerView.getLayoutManager();
+        int i = manager1.findFirstVisibleItemPosition();
+        if (manager1.getItemCount() == manager1.findLastCompletelyVisibleItemPosition() + 2) {
+            Toast.makeText(this, "没有更多视频，即将停止播放！", Toast.LENGTH_SHORT).show();
+        }
+        if (manager1.getItemCount() == manager1.findLastCompletelyVisibleItemPosition() + 1) {
+            Jzvd.releaseAllVideos();
+        } else {
+            recyclerView.smoothScrollToPosition(i + 1);
+        }
     }
 }
